@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - Ekall Store</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #111119);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: #1b1b28;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            border: 1px solid #ffcc00;
+        }
+        h2 { color: #ffcc00; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #111;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: #ffcc00; outline: none; }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #ffcc00;
+            border: none;
+            color: #111;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        button:hover { background: #e6b800; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>ADMIN LOGIN</h2>
+    <form id="formLogin">
+        <input type="text" id="username" placeholder="Username Admin" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Masuk Dashboard 🚀</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('formLogin').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Login Berhasil! Selamat datang, Ekall!');
+                // Simpan tanda login di browser sementara
+                localStorage.setItem('admin_logged_in', 'true');
+                // Lempar ke halaman admin.html
+                window.location.href = 'admin.html';
+            } else {
+                alert('Gagal Login: ' + data.message);
+            }
+        } catch (error) {
+            alert('Server backend mati, nyalain dulu server.js nya!');
+        }
+    });
+</script>
+
+</body>
+</html>

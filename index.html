@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekall Store - E-Commerce Top Up & Joki MLBB</title>
+    <style>
+        body {
+            background-image: linear-gradient(rgba(18, 22, 32, 0.9), rgba(18, 22, 32, 0.95)), url('fanny.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        nav {
+            background-color: #1a202c;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d3748;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .nav-logo {
+            font-weight: bold;
+            font-size: 22px;
+            color: #ffcc00;
+            letter-spacing: 1px;
+        }
+
+        .hero-banner {
+            width: 100%;
+            height: 250px;
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(18, 22, 32, 1)), url('fanny.jpg');
+            background-size: cover;
+            background-position: center 20%;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 10% 20px 10%;
+            box-sizing: border-box;
+        }
+
+        .game-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .game-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 18px;
+            border: 3px solid #ffcc00;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .game-detail h1 {
+            margin: 0 0 5px 0;
+            font-size: 28px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .game-status {
+            font-size: 13px;
+            color: #a0aec0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-box {
+            background-color: #1a202c;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .card-box h3 {
+            color: #ffcc00;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 1px solid #2d3748;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-num {
+            background-color: #ffcc00;
+            color: #121620;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #cbd5e0;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            color: white;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        /* Pilihan Pembayaran ala Pro */
+        .payment-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .payment-option {
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option:hover {
+            border-color: #ffcc00;
+        }
+
+        .payment-option.selected {
+            border-color: #ffcc00;
+            background-color: #242f41;
+        }
+
+        .selected-info {
+            background-color: #2d3748;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border-left: 4px solid #ffcc00;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #ffcc00;
+            color: #121620;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #e6b800;
+        }
+
+        /* Kanan */
+        .section-title {
+            color: #ffcc00;
+            font-size: 16px;
+            margin: 25px 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .product-card {
+            background-color: #1a202c;
+            border: 2px solid #2d3748;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            border-color: #ffcc00;
+            transform: translateY(-3px);
+        }
+
+        .product-card.selected {
+            border-color: #ffcc00;
+            background-color: #242f41;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 8px;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: #ffcc00;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Deskripsi Cara Order */
+        .desc-list {
+            padding-left: 20px;
+            margin: 0;
+            color: #cbd5e0;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        /* Tombol WA Melayang di Pojok Kanan Bawah */
+.whatsapp-floating {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #25d366; /* Warna hijau khas WA */
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.whatsapp-floating:hover {
+    transform: scale(1.1); /* Efek membesar sedikit pas di-hover */
+    box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+}
+
+.whatsapp-floating svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+}
+    </style>
+</head>
+<body>
+    
+
+   <nav style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+        <div class="nav-logo">🛒 EKALL STORE</div>
+        
+        <div style="display: flex; gap: 20px; padding-right: 20px;">
+            <a href="index.html" style="color: #ffcc00; text-decoration: none; font-weight: bold; font-size: 15px;">🎮 Form Joki</a>
+            <a href="ces-status.html" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 15px;">🔍 Cek Status</a>
+        </div>
+    </nav>
+
+    <div class="hero-banner">
+        <div class="game-info">
+            <div class="game-icon" style="background: url('fanny.jpg') center/cover;"></div>
+            <div class="game-detail">
+                <h1>MOBILE LEGENDS</h1>
+                <div class="game-status">
+                    <div class="status-item">⚡ Proses Cepat</div>
+                    <div class="status-item">🔒 Pembayaran Aman</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM UTAMA -->
+    <form id="formJoki">
+        <div class="main-content">
+            
+            <!-- SISI KIRI: INPUT DATA, PEMBAYARAN & KONTAK -->
+            <div class="left-panel">
+                
+                <!-- STEP 1: DATA AKUN -->
+                <div class="card-box">
+                    <h3><span class="step-num">1</span> Masukkan Data Akun</h3>
+                    <label>User ID & Zone ID</label>
+                    <input type="text" id="playerId" placeholder="Contoh: 12345678 (2026)" required>
+                </div>
+
+                <!-- STEP 3: METODE PEMBAYARAN -->
+                <div class="card-box">
+                    <h3><span class="step-num">3</span> Pilih Metode Pembayaran</h3>
+                    <div class="payment-grid">
+                        <div class="payment-option" onclick="pilihPembayaran(this, 'QRIS (All Payment)')">
+                            <span>📸 QRIS (Gopay/Dana/OVO)</span>
+                            <span style="color: #ffcc00; font-size: 12px; font-weight: bold;">BEST PRICE</span>
+                        </div>
+                        <div class="payment-option" onclick="pilihPembayaran(this, 'Transfer Saldo DANA')">
+                            <span>💸 E-Wallet DANA</span>
+                            <span style="color: #a0aec0; font-size: 12px;">Proses Otomatis</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: DETAIL KONTAK -->
+                <div class="card-box">
+                    <h3><span class="step-num">4</span> Detail Kontak</h3>
+                    <label>Alamat Email (Untuk Bukti Transaksi)</label>
+                    <input type="email" id="playerEmail" placeholder="contoh@gmail.com" required>
+                    
+                    <label>Nomor WhatsApp Kamu</label>
+                    <input type="text" id="playerWa" placeholder="Contoh: 08123456789" required>
+                    
+                    <span style="font-size: 11px; color: #a0aec0; display:block; margin-bottom: 15px;">** Nomor ini akan dihubungi jika terjadi kendala pesanan</span>
+
+                    <div class="selected-info">
+                        Item: <span id="txtProdukPilihan" style="color: #ffcc00;">Belum Memilih</span><br>
+                        Bayar: <span id="txtBayarPilihan" style="color: #ffcc00;">Belum Memilih</span>
+                    </div>
+                    
+                    <button type="submit">Beli Sekarang! 🚀</button>
+                </div>
+
+                <!-- STEP 5: CARA ORDER -->
+                <div class="card-box">
+                    <h3>📋 Deskripsi Cara Order</h3>
+                    <ol class="desc-list">
+                        <li>Pilih produk nominal Diamond atau Rank Joki yang kamu mau di panel kanan.</li>
+                        <li>Masukkan data User ID & Zone ID Game kamu dengan benar.</li>
+                        <li>Pilih metode pembayaran favorit kamu.</li>
+                        <li>Masukkan Email valid dan nomor WhatsApp aktif.</li>
+                        <li>Klik <b>Beli Sekarang</b>, sistem akan mencatat orderan otomatis!</li>
+                    </ol>
+                </div>
+            </div>
+
+           <!-- SISI KANAN: LIST PILIHAN PRODUK -->
+        <div class="right-panel">
+            <div class="card-box">
+                <h3><span class="step-num">2</span> Pilih Nominal Layanan</h3>
+                
+                <!-- KATEGORI DIAMOND & WDP -->
+                <div class="section-title">💎 Top Up Diamond & WDP MLBB</div>
+                <div class="product-grid">
+                    <div class="product-card" onclick="pilihProduk(this, 'Top Up 86 Diamond MLBB')">
+                        <div style="font-size: 24px; margin-bottom: 8px;">💎</div>
+                        <div class="product-title">86 Diamonds</div>
+                        <div class="product-price">Rp 20.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Top Up 172 Diamond MLBB')">
+                        <div style="font-size: 24px; margin-bottom: 8px;">💎</div>
+                        <div class="product-title">172 Diamonds</div>
+                        <div class="product-price">Rp 40.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Top Up 257 Diamond MLBB')">
+                        <div style="font-size: 24px; margin-bottom: 8px;">💎</div>
+                        <div class="product-title">257 Diamonds</div>
+                        <div class="product-price">Rp 60.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Top Up 344 Diamond MLBB')">
+                        <div style="font-size: 24px; margin-bottom: 8px;">💎</div>
+                        <div class="product-title">344 Diamonds</div>
+                        <div class="product-price">Rp 80.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Top Up 429 Diamond MLBB')">
+                        <div style="font-size: 24px; margin-bottom: 8px;">💎</div>
+                        <div class="product-title">429 Diamonds</div>
+                        <div class="product-price">Rp 100.000</div>
+                    </div>
+                    <div class="product-card" style="border-color: #3182ce;" onclick="pilihProduk(this, 'Weekly Diamond Pass (WDP)')">
+                        <div style="font-size: 24px; margin-bottom: 8px;">🎫</div>
+                        <div class="product-title" style="color: #63b3ed;">Weekly Diamond Pass</div>
+                        <div class="product-price">Rp 28.000</div>
+                    </div>
+                </div>
+
+                <!-- KATEGORI JOKI RANK (PER BINTANG) -->
+                <div class="section-title">⚔️ Jasa Joki Rank (Per Bintang)</div>
+                <div class="product-grid">
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Master / Bintang - 2k')">
+                        <img src="rank-master.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Master">
+                        <div class="product-title">Master</div>
+                        <div class="product-price">Rp 2.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Grandmaster / Bintang - 3k')">
+                        <img src="rank-gm.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Grandmaster">
+                        <div class="product-title">Grandmaster</div>
+                        <div class="product-price">Rp 3.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Epic / Bintang - 5k')">
+                        <img src="rank-epic.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Epic">
+                        <div class="product-title">Epic</div>
+                        <div class="product-price">Rp 5.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Legend / Bintang - 10k')">
+                        <img src="rank-legend.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Legend">
+                        <div class="product-title">Legend</div>
+                        <div class="product-price">Rp 10.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Mythic / Bintang - 12k')">
+                        <img src="rank-mythic.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Mythic">
+                        <div class="product-title">Mythic</div>
+                        <div class="product-price">Rp 12.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Mythic Honor / Bintang - 15k')">
+                        <img src="rank-honor.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Honor">
+                        <div class="product-title">Mythic Honor</div>
+                        <div class="product-price">Rp 15.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Mythic Glory / Bintang - 20k')">
+                        <img src="rank-glory.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Glory">
+                        <div class="product-title">Mythic Glory</div>
+                        <div class="product-price">Rp 20.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Joki Mythic Immortal / Bintang - 30k')">
+                        <img src="rank-immortal.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Immortal">
+                        <div class="product-title">Mythic Immortal</div>
+                        <div class="product-price">Rp 30.000 <span style="font-size: 11px; color: #a0aec0;">/btg</span></div>
+                    </div>
+                </div>
+
+              <div class="section-title">🎁 Paket Hemat & Full Grading</div>
+                <div class="product-grid">
+                    <div class="product-card" onclick="pilihProduk(this, 'Paket Full Grading (10 Match)')">
+                        <img src="rank-all.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Grading">
+                        <div class="product-title">Full Grading (10 Match)</div>
+                        <div class="product-price">Rp 120.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Paket Hemat: Legend ke Mythic')">
+                        <img src="rank-all.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Pack">
+                        <div class="product-title">Legend ke Mythic</div>
+                        <div class="product-price">Rp 230.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Paket Hemat: Mythic ke Honor')">
+                        <img src="rank-all.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Pack">
+                        <div class="product-title">Mythic ke Honor</div>
+                        <div class="product-price">Rp 350.000</div>
+                    </div>
+                    <!-- INI DIA YANG KETINGGALAN KELUPAAN TADI, KALL: -->
+                    <div class="product-card" onclick="pilihProduk(this, 'Paket Hemat: Honor ke Glory')">
+                        <img src="rank-all.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Pack">
+                        <div class="product-title">Honor ke Glory</div>
+                        <div class="product-price">Rp 450.000</div>
+                    </div>
+                    <div class="product-card" onclick="pilihProduk(this, 'Paket Hemat: Glory ke Immortal')">
+                        <img src="rank-all.png" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px;" alt="Pack">
+                        <div class="product-title">Glory ke Immortal</div>
+                        <div class="product-price">Rp 900.000</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        </div>
+    </form>
+
+   <script>
+        let produkTerpilih = "";
+        let pembayaranTerpilih = "";
+
+        function pilihProduk(elemen, namaProduk) {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            elemen.classList.add('selected');
+            produkTerpilih = namaProduk;
+            document.getElementById('txtProdukPilihan').innerText = namaProduk;
+        }
+
+        function pilihPembayaran(elemen, namaMetode) {
+            const options = document.querySelectorAll('.payment-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            elemen.classList.add('selected');
+            pembayaranTerpilih = namaMetode;
+            document.getElementById('txtBayarPilihan').innerText = namaMetode;
+        }
+
+        document.getElementById('formJoki').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!produkTerpilih) {
+                alert('Pilih nominal produknya dulu di sebelah kanan, Kall!');
+                return;
+            }
+            if (!pembayaranTerpilih) {
+                alert('Pilih metode pembayarannya dulu, Kall!');
+                return;
+            }
+
+            const playerId = document.getElementById('playerId').value;
+
+            try {
+                // 1. SIMPAN DATA KE BACKEND MYSQL VIA PORT 3000
+                const response = await fetch('http://localhost:3000/api/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        player_id: playerId, 
+                        paket_joki: `${produkTerpilih} (${pembayaranTerpilih})` 
+                    })
+                });
+
+                const hasil = await response.json();
+                
+                if(hasil.success) {
+                    // 2. HANYA TAMPILKAN POP-UP SUKSES (TIDAK ADA LINK WA LAGI)
+                    alert(`Pesanan Sukses Di-input!\nProduk: ${produkTerpilih}\nMetode: ${pembayaranTerpilih}\nID Player: ${playerId}`);
+
+                    // 3. AUTOMATIC RESET FORM SELESAI TRANSAKSI
+                    document.getElementById('formJoki').reset();
+                    document.getElementById('txtProdukPilihan').innerText = "Belum Memilih";
+                    document.getElementById('txtBayarPilihan').innerText = "Belum Memilih";
+                    document.querySelectorAll('.product-card, .payment-option').forEach(el => el.classList.remove('selected'));
+                    produkTerpilih = "";
+                    pembayaranTerpilih = "";
+                }
+            } catch (error) {
+                alert('Server.js nya jangan lupa dinyalain dulu di terminal VS Code, Kall!');
+            }
+        });
+    </script>
+    <!-- Tombol WA Melayang (Ganti nomor HP di bawah dengan nomor WA kamu ya!) -->
+<a href="https://wa.me/6281213922149?text=Halo%20Admin%20Ekall%20Store,%20mau%20tanya-tanya%20soal%20top%20up/joki%20dong" class="whatsapp-floating" target="_blank" title="Tanya Admin via WhatsApp">
+    <!-- Icon SVG WhatsApp Resmi -->
+    <svg viewBox="0 0 24 24">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-4.846c1.66.986 3.296 1.484 4.81 1.484 5.417 0 9.823-4.382 9.826-9.761.002-2.605-1.002-5.054-2.83-6.886-1.827-1.83-4.258-2.836-6.864-2.836-5.42 0-9.828 4.382-9.832 9.762-.001 1.733.486 3.394 1.411 4.814l-.973 3.555 3.654-.959zM17.486 14.28c-.3-.15-1.773-.875-2.043-.974-.27-.099-.467-.15-.662.15-.195.3-.755.949-.927 1.149-.172.199-.344.225-.644.075-.3-.15-1.266-.467-2.41-1.485-.89-.793-1.492-1.773-1.667-2.073-.174-.3-.019-.462.13-.611.135-.134.3-.349.45-.524.15-.174.199-.3.3-.499.099-.2.05-.375-.025-.524-.075-.15-.662-1.596-.907-2.185-.238-.574-.48-.496-.662-.505-.171-.007-.368-.008-.567-.008-.199 0-.523.075-.797.375-.274.3-1.045 1.022-1.045 2.494s1.07 2.939 1.22 3.139c.15.199 2.107 3.217 5.105 4.512.714.308 1.271.493 1.706.632.717.228 1.368.196 1.884.119.575-.085 1.773-.725 2.022-1.424.249-.699.249-1.299.174-1.424-.075-.125-.27-.199-.57-.349z"/>
+    </svg>
+</a>
+</body>
+</html>
