@@ -82,9 +82,11 @@
             <thead>
                 <tr>
                     <th>ID Order</th>
-                    <th>ID & Zona Player</th>
-                    <th>Paket Joki</th>
-                    <th>Status Orderan</th>
+        <th>Diproses Oleh</th>
+        <th>ID Player</th>
+        <th>Server</th>
+        <th>Paket Joki</th>
+        <th>Status Orderan</th>
                 </tr>
             </thead>
             <tbody id="tabelOrderan">
@@ -92,111 +94,112 @@
         </table>
     </div>
 
-    <script>
-        // ====== KUNCI KEAMANAN DASHBOARD ======
-        // Cek apakah di browser ada bukti kalau user sudah sukses login
-        if (localStorage.getItem('admin_logged_in') !== 'true') {
-            alert('Akses Ditolak! Kamu harus login dulu, Kall!');
-            // Jika tidak ada bukti login, tendang paksa ke halaman login.html
-            window.location.href = 'login.html';
-        }
+   <script>
+    // ====== KUNCI KEAMANAN DASHBOARD ======
+    const token = localStorage.getItem('tokenAdmin');
 
-        // Fungsi Logout
-        function logoutAdmin() {
-            localStorage.removeItem('admin_logged_in');
-            alert('Berhasil keluar dari Dashboard!');
-            window.location.href = 'login.html';
-        }
-        // ======================================
+    if (!token) {
+        alert('Akses Ditolak! Kamu harus login dulu, Kall!');
+        window.location.href = 'login.html';
+    }
 
-        // Fungsi untuk mengambil data dari backend Node.js
-        async function ambilDataOrderan() {
-            try {
-                const response = await fetch('http://localhost:3000/api/orders');
-                const hasil = await response.json();
+    function logoutAdmin() {
+        localStorage.removeItem('tokenAdmin');
+        alert('Berhasil keluar dari Dashboard!');
+        window.location.href = 'login.html';
+    }
+    // ======================================
 
-                const tabel = document.getElementById('tabelOrderan');
-                tabel.innerHTML = ''; 
-
-                if (hasil.success && hasil.data.length > 0) {
-                    hasil.data.forEach(order => {
-                        const statusSekarang = order.status || 'Pending';                     
-                        const baris = `
-                            <tr>
-                                <td style="color: #a0aec0;">${order.id}</td>
-                                <td style="font-weight: bold;">${order.player_id}</td>
-                                <td style="color: #ffcc00;">${order.paket_joki}</td>
-                                <td>
-                                    <select onchange="updateStatus('${order.id}', this.value)" style="background:#2d3748; color:white; border:1px solid #4a5568; padding:8px; border-radius:4px; cursor:pointer; margin-right: 10px;">
-                                        <option value="Pending" ${statusSekarang === 'Pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="Diproses" ${statusSekarang === 'Diproses' ? 'selected' : ''}>Diproses</option>
-                                        <option value="Selesai" ${statusSekarang === 'Selesai' ? 'selected' : ''}>Selesai</option>
-                                    </select>
-
-                                    <button onclick="hapusOrderan('${order.id}')" style="background:#e53e3e; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                        tabel.innerHTML += baris;
-                    });
-                } else {
-                    tabel.innerHTML = `<tr><td colspan="4" class="no-data">Belum ada orderan masuk nih, Kall.</td></tr>`;
+    // Fungsi untuk mengambil data dari backend Node.js
+    async function ambilDataOrderan() {
+        try {
+            const response = await fetch('http://localhost:3000/api/orders', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
+            });
+            
+            const hasil = await response.json();
+            const tabel = document.getElementById('tabelOrderan');
+            tabel.innerHTML = ''; 
 
-            } catch (error) {
-                console.error('Error saat ngambil data:', error);
-                alert('Gagal tersambung ke server backend!');                                                                                                                                                                                
-            }
-        }
-
-        // Fungsi untuk mengubah status di MySQL via Backend
-        async function updateStatus(id, statusBaru) {
-            try {
-                const response = await fetch(`http://localhost:3000/api/orders/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: statusBaru })
+            if (hasil.success && hasil.data && hasil.data.length > 0) {
+                hasil.data.forEach(order => {
+                    const statusSekarang = order.status || 'Pending';                    
+                    const baris = `
+                        <tr>
+                            <td style="color: #a0aec0;">${order.id}</td>
+                            <td style="color: #48bb78; font-weight: bold;">${order.nama_admin ? order.nama_admin : 'Sistem'}</td>
+                            <td style="font-weight: bold;">${order.player_id}</td>
+                            <td style="font-weight: bold;">${order.zone_id}</td>
+                            <td style="color: #ffcc00;">${order.paket_joki}</td>
+                            <td>
+                                <select onchange="updateStatus('${order.id}', this.value, '${order.email || 'kosong'}')" style="background:#2d3748; color:white; border:1px solid #4a5568; padding:8px; border-radius:4px; cursor:pointer; margin-right: 10px;">
+                                    <option value="Pending" ${statusSekarang === 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="Lunas" ${statusSekarang === 'Lunas' ? 'selected' : ''}>Lunas</option>
+                                    <option value="Diproses" ${statusSekarang === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                                    <option value="Selesai" ${statusSekarang === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                </select>
+                                <button onclick="hapusOrderan('${order.id}')" style="background:#e53e3e; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;">
+                                    Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tabel.innerHTML += baris;
                 });
-                const hasil = await response.json();
+            } else {
+                tabel.innerHTML = `<tr><td colspan="6" class="no-data">Belum ada orderan masuk nih, Kall.</td></tr>`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal tersambung ke server backend!');
+        }
+    }
 
+    // Fungsi update status
+    async function updateStatus(id, statusBaru, emailPembeli) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/orders/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: statusBaru, email: emailPembeli })
+            });
+            const hasil = await response.json();
+            if (hasil.success) {
+                alert(hasil.message);
+                ambilDataOrderan();
+            } else {
+                alert('Gagal update: ' + hasil.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal update status!');
+        }
+    } 
+
+    // Fungsi hapus
+    async function hapusOrderan(id) {
+        if (confirm('Yakin ingin menghapus orderan ini, Kall?')) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/orders/${id}`, { method: 'DELETE' });
+                const hasil = await response.json();
                 if (hasil.success) {
                     alert(hasil.message);
-                    ambilDataOrderan(); // Refresh tabel otomatis setelah update
+                    ambilDataOrderan();
                 } else {
-                    alert('Gagal update: ' + hasil.message);
+                    alert('Gagal menghapus: ' + hasil.message);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Gagal terhubung ke server untuk update status!');
+                alert('Gagal menghapus data!');
             }
         }
+    }
 
-        // Fungsi untuk menghapus orderan di MySQL via Backend
-        async function hapusOrderan(id) {
-            if (confirm('Apakah kamu yakin ingin menghapus orderan ini, Kall?')) {
-                try {
-                    const response = await fetch(`http://localhost:3000/api/orders/${id}`, {
-                        method: 'DELETE'
-                    });
-                    const hasil = await response.json();
-
-                    if (hasil.success) {
-                        alert(hasil.message);
-                        ambilDataOrderan(); // Refresh tabel otomatis setelah dihapus
-                    } else {
-                        alert('Gagal menghapus: ' + hasil.message);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Gagal terhubung ke server untuk menghapus data!');
-                }
-            }
-        }
-
-        // Cukup panggil lewat window.onload saja saat halaman selesai diload (Ganda sudah dihapus)
-        window.onload = ambilDataOrderan;
-    </script>
+    window.onload = ambilDataOrderan;
+</script>
 </body>
 </html>

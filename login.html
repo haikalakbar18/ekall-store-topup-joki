@@ -83,7 +83,7 @@
             if (data.success) {
                 alert('Login Berhasil! Selamat datang, Ekall!');
                 // Simpan tanda login di browser sementara
-                localStorage.setItem('admin_logged_in', 'true');
+             localStorage.setItem('tokenAdmin', data.token);
                 // Lempar ke halaman admin.html
                 window.location.href = 'admin.html';
             } else {

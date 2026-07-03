@@ -37,31 +37,37 @@
             <p><strong>Status:</strong> <span id="resStatus" style="color: #ffcc00; font-weight: bold;"></span></p>
         </div>
     </div>
-
-    <script>
-        async function cekStatus() {
-            const id = document.getElementById('inputOrderId').value;
-            const boxHasil = document.getElementById('boxHasil');
-
-            if(!id) return alert('Isi ID orderannya dulu, Kall!');
-
-            try {
-                const response = await fetch(`http://localhost:3000/api/orders/${id}`);
-                const hasil = await response.json();
-
-                if(hasil.success) {
-                    document.getElementById('resPlayerId').innerText = hasil.data.player_id;
-                    document.getElementById('resPaket').innerText = hasil.data.paket_joki;
-                    document.getElementById('resStatus').innerText = hasil.data.status || 'Pending';
-                    boxHasil.style.display = 'block';
-                } else {
-                    alert(hasil.message);
-                    boxHasil.style.display = 'none';
-                }
-            } catch (error) {
-                alert('Gagal menyambung ke server!');
+<script>
+    async function cekStatus() {
+        const id = document.getElementById('inputOrderId').value;
+        const boxHasil = document.getElementById('boxHasil');
+        if(!id) return alert('Isi ID orderannya dulu!');
+        
+        try {
+            const response = await fetch(`http://localhost:3000/api/orders/${id}`);
+            const hasil = await response.json();
+            if(hasil.success) {
+                document.getElementById('resPlayerId').innerText = hasil.data.player_id;
+                document.getElementById('resPaket').innerText = hasil.data.paket_joki;
+                const statusEl = document.getElementById('resStatus');
+                const statusText = hasil.data.status || 'Pending';
+                statusEl.innerText = statusText;
+                
+                // Warna Status
+                if (statusText === 'Lunas') statusEl.style.color = '#48bb78';
+                else if (statusText === 'Diproses') statusEl.style.color = '#ecc94b';
+                else if (statusText === 'Selesai') statusEl.style.color = '#3182ce';
+                else statusEl.style.color = '#f56565';
+                
+                boxHasil.style.display = 'block';
+            } else {
+                alert(hasil.message);
+                boxHasil.style.display = 'none';
             }
+        } catch (error) {
+            alert('Gagal nyambung ke server!');
         }
-    </script>
+    }
+</script>
 </body>
 </html>

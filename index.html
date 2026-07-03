@@ -331,11 +331,34 @@
             <div class="left-panel">
                 
                 <!-- STEP 1: DATA AKUN -->
-                <div class="card-box">
-                    <h3><span class="step-num">1</span> Masukkan Data Akun</h3>
-                    <label>User ID & Zone ID</label>
-                    <input type="text" id="playerId" placeholder="Contoh: 12345678 (2026)" required>
-                </div>
+<div class="card-box">
+    <h3><span class="step-num">1</span> Masukkan Data Akun</h3>
+    <label>User ID & Zone ID</label>
+    
+    <div class="input-group-flex" style="display: flex; gap: 12px; margin-top: 8px;">
+        
+        <div style="flex: 2;">
+            <input 
+                type="text" 
+                id="playerId" 
+                placeholder="Masukkan User ID" 
+                style="width: 100%; padding: 12px; background: #2d3748; border: 1px solid #4a5568; color: white; border-radius: 6px; font-size: 14px;"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+            />
+        </div>
+
+        <div style="flex: 1;">
+            <input 
+                type="text" 
+                id="zoneId" 
+                placeholder="(Zone ID)" 
+                style="width: 100%; padding: 12px; background: #2d3748; border: 1px solid #4a5568; color: white; border-radius: 6px; font-size: 14px; text-align: center;"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+            />
+        </div>
+
+    </div>
+    </div>
 
                 <!-- STEP 3: METODE PEMBAYARAN -->
                 <div class="card-box">
@@ -505,70 +528,90 @@
         </div>
     </form>
 
-   <script>
-        let produkTerpilih = "";
-        let pembayaranTerpilih = "";
+  <script>
+    let produkTerpilih = "";
+    let pembayaranTerpilih = "";
 
-        function pilihProduk(elemen, namaProduk) {
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => card.classList.remove('selected'));
-            elemen.classList.add('selected');
-            produkTerpilih = namaProduk;
-            document.getElementById('txtProdukPilihan').innerText = namaProduk;
+    function pilihProduk(elemen, namaProduk) {
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach(card => card.classList.remove('selected'));
+        elemen.classList.add('selected');
+        produkTerpilih = namaProduk;
+        document.getElementById('txtProdukPilihan').innerText = namaProduk;
+    }
+
+    function pilihPembayaran(elemen, namaMetode) {
+        const options = document.querySelectorAll('.payment-option');
+        options.forEach(opt => opt.classList.remove('selected'));
+        elemen.classList.add('selected');
+        pembayaranTerpilih = namaMetode;
+        document.getElementById('txtBayarPilihan').innerText = namaMetode;
+    }
+
+    document.getElementById('formJoki').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!produkTerpilih) {
+            alert('Pilih nominal produknya dulu di sebelah kanan, Kall!');
+            return;
+        }
+        if (!pembayaranTerpilih) {
+            alert('Pilih metode pembayarannya dulu, Kall!');
+            return;
         }
 
-        function pilihPembayaran(elemen, namaMetode) {
-            const options = document.querySelectorAll('.payment-option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            elemen.classList.add('selected');
-            pembayaranTerpilih = namaMetode;
-            document.getElementById('txtBayarPilihan').innerText = namaMetode;
-        }
+        const playerId = document.getElementById('playerId').value;
+        const zoneId = document.getElementById('zoneId').value;
+        const emailPembeli = document.getElementById('playerEmail').value;
+        const noWaPembeli = document.getElementById('playerWa').value; // 🔥 FIX: Nangkap input nomor WhatsApp dari form pembeli
 
-        document.getElementById('formJoki').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        try {
+            // =============================================================
+            // 🔥 JALUR FIX: LANGSUNG TEMBAK KE MIDTRANS & DATABASE SEKALIGUS
+            // =============================================================
+            const totalHargaJoki = 50000; // Sesuaiin nominal lu
+const responseMidtrans = await fetch('/api/order-joki', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        idUser: playerId,
+        zona: zoneId,
+        paketJoki: produkTerpilih,
+        totalHarga: totalHargaJoki,
+        email: emailPembeli,
+        whatsapp: noWaPembeli
+    })
+});
 
-            if (!produkTerpilih) {
-                alert('Pilih nominal produknya dulu di sebelah kanan, Kall!');
-                return;
-            }
-            if (!pembayaranTerpilih) {
-                alert('Pilih metode pembayarannya dulu, Kall!');
-                return;
-            }
+            const dataMidtrans = await responseMidtrans.json();
 
-            const playerId = document.getElementById('playerId').value;
-
-            try {
-                // 1. SIMPAN DATA KE BACKEND MYSQL VIA PORT 3000
-                const response = await fetch('http://localhost:3000/api/order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        player_id: playerId, 
-                        paket_joki: `${produkTerpilih} (${pembayaranTerpilih})` 
-                    })
-                });
-
-                const hasil = await response.json();
+            if (dataMidtrans.status === 'success') {
+                // Tampilkan pop-up info invoice menggunakan data ID yang dikirim balik oleh rute /api/order-joki
+                alert(`Pesanan Sukses Di-input!\n----------------------------------------\n👉 NO. INVOICE / ID ORDER: #${dataMidtrans.id}\n🎮 ID Player: ${playerId} (${zoneId || 'Tanpa Server'})\n📦 Paket Joki: ${produkTerpilih}\n💳 Metode: ${pembayaranTerpilih}\n----------------------------------------\n\nKlik OK untuk lanjut ke halaman pembayaran Midtrans ya!`);
                 
-                if(hasil.success) {
-                    // 2. HANYA TAMPILKAN POP-UP SUKSES (TIDAK ADA LINK WA LAGI)
-                    alert(`Pesanan Sukses Di-input!\nProduk: ${produkTerpilih}\nMetode: ${pembayaranTerpilih}\nID Player: ${playerId}`);
-
-                    // 3. AUTOMATIC RESET FORM SELESAI TRANSAKSI
-                    document.getElementById('formJoki').reset();
-                    document.getElementById('txtProdukPilihan').innerText = "Belum Memilih";
-                    document.getElementById('txtBayarPilihan').innerText = "Belum Memilih";
-                    document.querySelectorAll('.product-card, .payment-option').forEach(el => el.classList.remove('selected'));
-                    produkTerpilih = "";
-                    pembayaranTerpilih = "";
+                // Reset Form secara bersih beserta field baru
+                document.getElementById('formJoki').reset();
+                document.getElementById('txtProdukPilihan').innerText = "Belum Memilih";
+                document.getElementById('txtBayarPilihan').innerText = "Belum Memilih";
+                document.getElementById('playerEmail').value = "";
+                if (document.getElementById('playerWa')) {
+                    document.getElementById('playerWa').value = "";
                 }
-            } catch (error) {
-                alert('Server.js nya jangan lupa dinyalain dulu di terminal VS Code, Kall!');
+                document.querySelectorAll('.product-card, .payment-option').forEach(el => el.classList.remove('selected'));
+                produkTerpilih = "";
+                pembayaranTerpilih = "";
+
+                // Lempar ke Midtrans
+                window.location.href = dataMidtrans.redirect_url;
+            } else {
+                alert('Gagal menyambung ke kasir Midtrans: ' + dataMidtrans.message);
             }
-        });
-    </script>
+
+        } catch (error) {
+            alert('Server.js nya jangan lupa dinyalain dulu di terminal VS Code, Kall!');
+        }
+    });
+</script>
     <!-- Tombol WA Melayang (Ganti nomor HP di bawah dengan nomor WA kamu ya!) -->
 <a href="https://wa.me/6281213922149?text=Halo%20Admin%20Ekall%20Store,%20mau%20tanya-tanya%20soal%20top%20up/joki%20dong" class="whatsapp-floating" target="_blank" title="Tanya Admin via WhatsApp">
     <!-- Icon SVG WhatsApp Resmi -->
