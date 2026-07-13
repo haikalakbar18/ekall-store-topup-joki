@@ -2,72 +2,181 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cek Status Joki - Ekall</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Order - Ekall</title>
     <style>
-        body { background-color: #121620; color: #ffffff; font-family: 'Segoe UI', sans-serif; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        h1 { color: #ffcc00; }
-        .box { background-color: #1a202c; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; box-sizing: border-box; border: 1px solid #2d3748; }
-        input, button { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
-        input { background-color: #2d3748; border: 1px solid #4a5568; color: white; }
-        button { background-color: #ffcc00; color: #121620; border: none; font-weight: bold; cursor: pointer; }
-        .hasil { background-color: #2d3748; padding: 15px; border-radius: 6px; display: none; margin-top: 10px; border-left: 5px solid #ffcc00; }
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #121620;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 24px;
+            background: #1a202c;
+            border-bottom: 2px solid #ffcc00;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 18px;
+            color: #ffcc00;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .nav-links a.active {
+            color: #ffcc00;
+        }
+
+        .wrap {
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        h1 {
+            color: #ffcc00;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            background: #1a202c;
+            border: 1px solid #2d3748;
+            border-radius: 12px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e0;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        input {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        button {
+            background: #ffcc00;
+            color: #121620;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .hasil {
+            display: none;
+            margin-top: 16px;
+            padding: 14px;
+            background: #2d3748;
+            border-left: 5px solid #ffcc00;
+            border-radius: 6px;
+        }
+
+        .hasil p {
+            margin: 6px 0;
+        }
     </style>
 </head>
 <body>
-    <nav style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; background: #1a202c; padding: 15px 30px; border-bottom: 2px solid #ffcc00; margin-bottom: 20px;">
-        <!-- Logo di Kiri -->
-        <div style="font-weight: bold; font-size: 18px; color: #ffcc00;">🛒 EKALL STORE</div>
-        
-        <!-- Menu di Pojok Kanan -->
-        <div style="display: flex; gap: 20px;">
-            <a href="index.html" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 15px;">🎮 Form Joki</a>
-            <a href="ces-status.html" style="color: #ffcc00; text-decoration: none; font-weight: bold; font-size: 15px;">🔍 Cek Status</a>
+    <nav class="topbar">
+        <div class="brand">🛒 EKALL STORE</div>
+        <div class="nav-links">
+            <a href="index.html">🎮 Form Order</a>
+            <a href="ces-status.html" class="active">🔍 Cek Status</a>
         </div>
     </nav>
 
-    <h1>Cek Status Pesanan Joki</h1>
-    <div class="box">
-        <label>Masukkan ID Orderan Kamu:</label>
-        <input type="text" id="inputOrderId" placeholder="Contoh: 1780779327361">
-        <button onclick="cekStatus()">Cari Orderan</button>
+    <main class="wrap">
+        <h1>Cek Status Pesanan</h1>
+        <div class="box">
+            <label for="inputOrderId">Masukkan ID order kamu</label>
+            <input type="text" id="inputOrderId" placeholder="Contoh: 1780779327361">
+            <button type="button" onclick="cekStatus()">Cek Sekarang</button>
 
-        <div id="boxHasil" class="hasil">
-            <p><strong>ID & Zona:</strong> <span id="resPlayerId"></span></p>
-            <p><strong>Paket:</strong> <span id="resPaket"></span></p>
-            <p><strong>Status:</strong> <span id="resStatus" style="color: #ffcc00; font-weight: bold;"></span></p>
+            <div id="boxHasil" class="hasil">
+                <p><strong>ID & Zona:</strong> <span id="resPlayerId"></span></p>
+                <p><strong>Paket:</strong> <span id="resPaket"></span></p>
+                <p><strong>Status:</strong> <span id="resStatus"></span></p>
+            </div>
         </div>
-    </div>
-<script>
-    async function cekStatus() {
-        const id = document.getElementById('inputOrderId').value;
-        const boxHasil = document.getElementById('boxHasil');
-        if(!id) return alert('Isi ID orderannya dulu!');
-        
-        try {
-            const response = await fetch(`http://localhost:3000/api/orders/${id}`);
-            const hasil = await response.json();
-            if(hasil.success) {
-                document.getElementById('resPlayerId').innerText = hasil.data.player_id;
-                document.getElementById('resPaket').innerText = hasil.data.paket_joki;
-                const statusEl = document.getElementById('resStatus');
-                const statusText = hasil.data.status || 'Pending';
-                statusEl.innerText = statusText;
-                
-                // Warna Status
-                if (statusText === 'Lunas') statusEl.style.color = '#48bb78';
-                else if (statusText === 'Diproses') statusEl.style.color = '#ecc94b';
-                else if (statusText === 'Selesai') statusEl.style.color = '#3182ce';
-                else statusEl.style.color = '#f56565';
-                
-                boxHasil.style.display = 'block';
-            } else {
-                alert(hasil.message);
-                boxHasil.style.display = 'none';
+    </main>
+
+    <script>
+        async function cekStatus() {
+            const id = document.getElementById("inputOrderId").value.trim();
+            const boxHasil = document.getElementById("boxHasil");
+            const statusEl = document.getElementById("resStatus");
+
+            if (!id) {
+                alert("Isi ID order dulu.");
+                return;
             }
-        } catch (error) {
-            alert('Gagal nyambung ke server!');
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/orders/${id}`);
+                const hasil = await response.json();
+
+                if (hasil.success) {
+                    document.getElementById("resPlayerId").innerText = hasil.data.player_id;
+                    document.getElementById("resPaket").innerText = hasil.data.paket_joki;
+
+                    const statusText = hasil.data.status || "Pending";
+                    statusEl.innerText = statusText;
+
+                    if (statusText === "Lunas") {
+                        statusEl.style.color = "#48bb78";
+                    } else if (statusText === "Diproses") {
+                        statusEl.style.color = "#ecc94b";
+                    } else if (statusText === "Selesai") {
+                        statusEl.style.color = "#3182ce";
+                    } else {
+                        statusEl.style.color = "#f56565";
+                    }
+
+                    boxHasil.style.display = "block";
+                } else {
+                    alert(hasil.message || "Order tidak ditemukan.");
+                    boxHasil.style.display = "none";
+                }
+            } catch (error) {
+                alert("Gagal terhubung ke server.");
+            }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
